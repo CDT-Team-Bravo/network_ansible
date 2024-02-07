@@ -1,0 +1,23 @@
+---
+- name: "Create Network - {{ network.key }}_net"
+  os_network:
+    name: "{{ network.key }}_net"
+    state: present
+    port_security_enabled: "{{ network.value.port_security_enabled }}"
+  register: net_create_result
+
+- name: Register Net ID
+  set_fact: 
+    networks: "{{ networks | combine({ network.key: { 'id': net_create_result.id }}, recursive=true) }}"
+
+- name: "Create Subnet - {{ network.key }}_subnet"
+  os_subnet:
+    state: present
+    network_name: "{{ network.key }}_net"
+    name: "{{ network.key }}_subnet"
+    cidr: "{{ network.value.subnet.address }}"
+  register: subnet_create_result
+
+- name: Register Subnet ID
+  set_fact: 
+    networks: "{{ networks | combine({ network.key: { 'subnet': { 'id': subnet_create_result.id }}}, recursive=true) }}"

@@ -1,0 +1,5 @@
+---
+- hosts: pfsense
+  gather_facts: false
+  tasks:
+    - pfsensible.core.pfsense_

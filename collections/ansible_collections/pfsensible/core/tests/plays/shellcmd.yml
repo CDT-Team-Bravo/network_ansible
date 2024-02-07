@@ -1,0 +1,14 @@
+---
+- hosts: pfsense
+  gather_facts: false
+  tasks:
+    - name: Create a shellcmd
+      pfsensible.core.pfsense_shellcmd:
+        description: Command 1
+        cmd: echo hi
+
+    - name: Set the afterfilterchangeshellcmd
+      pfsensible.core.pfsense_shellcmd:
+        description: Command 2
+        cmd: echo after filter
+        cmdtype: afterfilterchangeshellcmd

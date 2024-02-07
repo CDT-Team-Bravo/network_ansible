@@ -1,0 +1,6 @@
+---
+- hosts: pfsense
+  gather_facts: false
+  tasks:
+    - pfsensible.core.pfsense_nat_1to1:
+        name: My nat

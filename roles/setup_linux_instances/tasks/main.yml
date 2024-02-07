@@ -1,0 +1,7 @@
+---
+- name: Set default gateways linux
+  become: yes
+  shell:
+    cmd: "ip route add default via {{ item.value.gateway_addr }}"
+  when: "'item.1.fixed_ip' in inventory_hostname"
+  loop: "{{ lookup('subelements', hostvars['localhost']['networks'], 'instances') }}"

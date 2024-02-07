@@ -1,0 +1,6 @@
+---
+- name: Delete ports
+  when: item.value.control is defined
+  shell:
+    cmd: "openstack port delete {{ (item.value.port_id }}"
+  loop: "{{ router.value.connections | dict2items }}"

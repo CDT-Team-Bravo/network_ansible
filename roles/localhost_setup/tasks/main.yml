@@ -1,0 +1,8 @@
+---
+- name: Install openstack.cloud collection
+  shell:
+    cmd: "ansible-galaxy collection install openstack.cloud"
+
+- name: Install pfsensible.core collection
+  shell:
+    cmd: "ansible-galaxy collection install pfsensible.core"

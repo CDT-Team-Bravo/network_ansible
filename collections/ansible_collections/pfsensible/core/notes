@@ -1,0 +1,12 @@
+
+
+Minimal entry
+
+try saving with nothing, will tell you what is required, e.g.:
+
+    The field External subnet is required.
+    The field Source address is required.
+    The external subnet IP is not from the specified address family.
+    The internal IP is not from the specified address family.
+
+save with name item_min

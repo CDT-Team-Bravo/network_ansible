@@ -1,0 +1,67 @@
+---
+- hosts: pfsense
+  tasks:
+    - name: Set basic LDAP authserver
+      pfsense_authserver_ldap:
+        name: ASLDAP
+        host: ldap.example.com
+        transport: tcp
+        scope: one
+        authcn: CN=Users
+        state: present
+
+    - name: "Set tcp authserver"
+      pfsense_authserver_ldap:
+        name: "test tcp"
+        host: 1.1.1.1
+        transport: tcp
+        scope: one
+        authcn: cn=users
+        state: present
+
+    - name: "Set starttls authserver"
+      pfsense_authserver_ldap:
+        name: test starttls extended
+        host: adserver.example.com
+        transport: starttls
+        scope: subtree
+        authcn: cn=users
+        extended_enabled: yes
+        extended_query: memberOf=CN=Groupname,OU=One & Two,DC=example,DC=com
+        basedn: dc=test,dc=com
+        binddn: cn=bind,ou=Service Accounts,dc=example,dc=com
+        bindpw: vaulted_bindpw
+        attr_user: samAccountName
+        attr_member: memberOf
+        state: present
+
+    - name: "Change starttls authserver host"
+      pfsense_authserver_ldap:
+        name: test starttls extended
+        host: adserver2.example.com
+        transport: starttls
+        ca: blah
+        scope: subtree
+        authcn: cn=users
+
+    - name: "Set ssl authserver"
+      pfsense_authserver_ldap:
+        name: test ssl authserver
+        host: adserver.example.com
+        port: '636'
+        transport: ssl
+        ca: CA3
+        scope: subtree
+        authcn: cn=users
+        basedn: dc=example,dc=com
+        binddn: cn=bind,ou=Service Accounts,dc=example,dc=com
+        bindpw: vaulted_bindpw
+        attr_user: samAccountName
+        attr_member: memberOf
+        attr_groupobj: group
+        state: present
+
+    - name: "Delete ssl authserver"
+      pfsense_authserver_ldap:
+        name: test ssl authserver
+        state: absent

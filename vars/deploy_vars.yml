@@ -1,0 +1,14 @@
+---
+default_key_name: remote
+ansible_control_key_name: netDeploy
+
+deploy_box:
+  id: "53954658-1ee8-4de9-b768-cf40e91cc536"
+  name: deploy
+
+deploy_net:
+  name: grey_net
+  id: "3a5bb425-8a80-443a-9192-4b9dbeef5452"
+  subnet:
+    name: grey_subnet
+    id: "2f3336e6-dc5e-4544-a562-cce68c830339"

@@ -1,0 +1,325 @@
+---
+- hosts: pfsense
+  tasks:
+  - block:
+    - name: test creation of a new host alias
+      pfsensible.core.pfsense_alias:
+        name: adservers
+        address: 10.0.0.1 10.0.0.2
+        #descr: ''
+        type: 'host'
+        #detail: ''
+      register: alias
+      failed_when: not alias.changed
+
+    - name: test not updating a host alias
+      pfsensible.core.pfsense_alias:
+        name: adservers
+        address: 10.0.0.1 10.0.0.2
+        #descr: ''
+        type: 'host'
+        #detail: ''
+      register: alias
+      failed_when: alias.changed
+
+    - name: test updating a host alias ip
+      pfsensible.core.pfsense_alias:
+        name: adservers
+        address: 10.0.0.1
+        #descr: ''
+        type: 'host'
+        #detail: ''
+      register: alias
+      failed_when: not alias.changed
+
+    - name: test updating a host alias descr
+      pfsensible.core.pfsense_alias:
+        name: adservers
+        address: 10.0.0.1
+        descr: AD Servers
+        type: 'host'
+        #detail: ''
+      register: alias
+      failed_when: not alias.changed
+
+    - name: test deletion of a host alias
+      pfsensible.core.pfsense_alias:
+        name: adservers
+        state: absent
+      register: alias
+      failed_when: not alias.changed
+
+    tags: alias_host
+
+    ##############
+    # ports
+    #
+  - block:
+    - name: test creation of a new port alias
+      pfsensible.core.pfsense_alias:
+        name: port_proxy
+        address: 8080 8443
+        #descr: ''
+        type: port
+        #detail: ''
+      register: alias
+      failed_when: not alias.changed
+
+    - name: test update noop of a port alias
+      pfsensible.core.pfsense_alias:
+        name: port_proxy
+        address: 8080 8443
+        #descr: ''
+        type: port
+        #detail: ''
+      register: alias
+      failed_when: alias.changed
+
+    - name: test update port of a port alias
+      pfsensible.core.pfsense_alias:
+        name: port_proxy
+        address: 8080
+        #descr: ''
+        type: port
+        #detail: ''
+      register: alias
+      failed_when: not alias.changed
+
+    - name: test update description of a port alias
+      pfsensible.core.pfsense_alias:
+        name: port_proxy
+        address: 8080
+        descr: Web Proxy Ports
+        type: port
+        #detail: ''
+      register: alias
+      failed_when: not alias.changed
+
+    - name: test deletion of a port alias
+      pfsensible.core.pfsense_alias:
+        name: port_proxy
+        state: absent
+      register: alias
+      failed_when: not alias.changed
+
+    tags: alias_port
+
+    ##############
+    # networks
+    #
+  - block:
+    - name: test creation of a new network alias
+      pfsensible.core.pfsense_alias:
+        name: data_networks
+        address: 192.168.1.0/24 192.168.2.0/24
+        #descr: ''
+        type: network
+        #detail: ''
+      register: alias
+      failed_when: not alias.changed
+
+    - name: test update noop of a network alias
+      pfsensible.core.pfsense_alias:
+        name: data_networks
+        address: 192.168.1.0/24 192.168.2.0/24
+        #descr: ''
+        type: network
+        #detail: ''
+      register: alias
+      failed_when: alias.changed
+
+    - name: test update network of a network alias
+      pfsensible.core.pfsense_alias:
+        name: data_networks
+        address: 192.168.1.0/24
+        #descr: ''
+        type: network
+        #detail: ''
+      register: alias
+      failed_when: not alias.changed
+
+    - name: test update descr of a network alias
+      pfsensible.core.pfsense_alias:
+        name: data_networks
+        address: 192.168.1.0/24
+        descr: Data Networks
+        type: network
+        #detail: ''
+      register: alias
+      failed_when: not alias.changed
+
+    - name: test deletion of a network alias
+      pfsensible.core.pfsense_alias:
+        name: data_networks
+        state: absent
+      register: alias
+      failed_when: not alias.changed
+
+    tags: alias_network
+
+    ##############
+    # urltables
+    #
+  - block:
+    - name: test creation of a new urltable alias
+      pfsensible.core.pfsense_alias:
+        name: acme_table
+        address: http://www.acme.com
+        #descr: ''
+        type: urltable
+        updatefreq: 10
+        #detail: ''
+      register: alias
+      failed_when: not alias.changed
+
+    - name: test update noop of a urltable alias
+      pfsensible.core.pfsense_alias:
+        name: acme_table
+        address: http://www.acme.com
+        #descr: ''
+        type: urltable
+        updatefreq: 10
+        #detail: ''
+      register: alias
+      failed_when: alias.changed
+
+    - name: test update url of a urltable alias
+      pfsensible.core.pfsense_alias:
+        name: acme_table
+        address: http://www.acme-corp.com
+        #descr: ''
+        type: urltable
+        updatefreq: 10
+        #detail: ''
+      register: alias
+      failed_when: not alias.changed
+
+    - name: test update descr of a urltable alias
+      pfsensible.core.pfsense_alias:
+        name: acme_table
+        address: http://www.acme-corp.com
+        descr: ACME Table
+        type: urltable
+        updatefreq: 10
+        #detail: ''
+      register: alias
+      failed_when: not alias.changed
+
+    - name: test update updatefreq of a urltable alias
+      pfsensible.core.pfsense_alias:
+        name: acme_table
+        address: http://www.acme-corp.com
+        descr: ACME Table
+        type: urltable
+        updatefreq: 100
+        #detail: ''
+      register: alias
+      failed_when: not alias.changed
+
+    - name: test deletion of a urltable alias
+      pfsensible.core.pfsense_alias:
+        name: acme_table
+        state: absent
+      register: alias
+      failed_when:
+        - not alias.changed
+        - alias.commands != ["delete alias 'acme_table'"]
+        - alias.diff.after != {}
+
+    tags: alias_urltable
+
+    ##############
+    # misc
+    #
+#    def test_create_alias_duplicate(self):
+#        """ test creation of a duplicate alias """
+#        alias = dict(name='port_ssh', address='10.0.0.1 10.0.0.2', type='host')
+#        self.do_alias_creation_test(alias, failed=True, msg="An alias with this name and a different type already exists: 'port_ssh'")
+#
+#    def test_create_alias_invalid_name(self):
+#        """ test creation of a new alias with invalid name """
+#        alias = dict(name='ads-ervers', address='10.0.0.1 10.0.0.2', type='host')
+#        msg = "The alias name 'ads-ervers' must be less than 32 characters long, may not consist of only numbers, may not consist of only underscores, "
+#        msg += "and may only contain the following characters: a-z, A-Z, 0-9, _"
+#        self.do_alias_creation_test(alias, failed=True, msg=msg)
+#
+#    def test_create_alias_invalid_name_interface(self):
+#        """ test creation of a new alias with invalid name """
+#        alias = dict(name='lan_100', address='10.0.0.1 10.0.0.2', type='host')
+#        self.do_alias_creation_test(alias, failed=True, msg="An interface description with this name already exists: 'lan_100'")
+#
+
+  - block:
+    - name: test creation of a new host alias with incoherent params
+      pfsensible.core.pfsense_alias:
+        name: adservers
+        address: 10.0.0.1 10.0.0.2
+        updatefreq: 10
+      register: alias
+      failed_when:
+        - alias.changed
+        - 'alias.msg != "updatefreq is only valid with type urltable or urltable_ports"'
+
+    - name: test creation of a new host alias without type
+      pfsensible.core.pfsense_alias:
+        name: adservers
+        address: 10.0.0.1 10.0.0.2
+      register: alias
+      failed_when:
+        - alias.changed
+        - 'alias.msg != "state is present but all of the following are missing: type"'
+
+    tags: fail
+#    def test_create_alias_without_type(self):
+#        """ test creation of a new host alias without type """
+#        alias = dict(name='adservers', address='10.0.0.1 10.0.0.2')
+#        self.do_alias_creation_test(alias, failed=True, msg='state is present but all of the following are missing: type')
+#
+#    def test_create_alias_without_address(self):
+#        """ test creation of a new host alias without address """
+#        alias = dict(name='adservers', type='host')
+#        self.do_alias_creation_test(alias, failed=True, msg='state is present but all of the following are missing: address')
+#
+#    def test_create_alias_invalid_details(self):
+#        """ test creation of a new host alias with invalid details """
+#        alias = dict(name='adservers', address='10.0.0.1 10.0.0.2', type='host', detail='ad1||ad2||ad3')
+#        self.do_alias_creation_test(alias, failed=True, msg='Too many details in relation to addresses')
+#
+#    def test_create_alias_invalid_details2(self):
+#        """ test creation of a new host alias with invalid details """
+#        alias = dict(name='adservers', address='10.0.0.1 10.0.0.2', type='host', detail='|ad1||ad2')
+#        self.do_alias_creation_test(alias, failed=True, msg='Vertical bars (|) at start or end of descriptions not allowed')
+#
+#    def test_delete_inexistent_alias(self):
+#        """ test deletion of an inexistent alias """
+#        alias = dict(name='ad_poc12', address='192.168.1.3', descr='', type='host', detail='')
+#        set_module_args(self.args_from_var(alias, 'absent'))
+#        result = self.execute_module(changed=False)
+#
+#        diff = dict(before={}, after={})
+#        self.assertEqual(result['diff'], diff)
+#        self.assertEqual(result['commands'], [])
+#
+#    def test_check_mode(self):
+#        """ test updating an host alias without generating result """
+#        alias = dict(name='ad_poc1', address='192.168.1.3', descr='', type='host', detail='')
+#        set_module_args(self.args_from_var(alias, address='192.168.1.4', _ansible_check_mode=True))
+#        result = self.execute_module(changed=True)
+#
+#        diff = dict(before=alias, after=copy(alias))
+#        diff['after']['address'] = '192.168.1.4'
+#        self.assertEqual(result['diff'], diff)
+#        self.assertFalse(self.load_xml_result())
+#        self.assertEqual(result['commands'], ["update alias 'ad_poc1' set address='192.168.1.4'"])
+#
+#    def test_urltable_required_if(self):
+#        """ test creation of a new urltable alias without giving updatefreq (should fail) """
+#        alias = dict(name='acme_table', address='http://www.acme.com', descr='', type='urltable', detail='')
+#        set_module_args(self.args_from_var(alias))
+#        self.execute_module(failed=True, msg='type is urltable but all of the following are missing: updatefreq')
+#
+#    def test_urltable_ports_required_if(self):
+#        """ test creation of a new urltable_ports alias without giving updatefreq (should fail) """
+#        alias = dict(name='acme_table', address='http://www.acme.com', descr='', type='urltable_ports', detail='')
+#        set_module_args(self.args_from_var(alias))
+#        self.execute_module(failed=True, msg='type is urltable_ports but all of the following are missing: updatefreq')

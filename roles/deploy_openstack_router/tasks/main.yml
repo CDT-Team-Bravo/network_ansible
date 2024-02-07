@@ -1,0 +1,16 @@
+---
+- name: Add router - {{ router.key }}
+  when: router.value.internet == false
+  os_router:
+    state: present
+    name: "{{ router.key }}_openstack"
+    interfaces: "{{ router.value.interfaces }}"
+
+- name: Add router - {{ router.key }}
+  when: router.value.internet == true
+  os_router:
+    state: present
+    name: "{{ router.key }}_openstack"
+    external_gateway_info: #external gateway is a port the router is built upon. 
+      network: "external249"
+    interfaces: "{{ router.value.interfaces }}"

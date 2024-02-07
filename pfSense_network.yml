@@ -1,0 +1,207 @@
+# Kamron Cole (kjc8084@rit.edu)
+# Modified Ansible script to set up network with PFsense by Alex Nasca
+- name: Localhost setup
+  hosts: localhost
+  roles:
+    - localhost_setup
+
+
+# - name: Deploy Networks
+#   hosts: localhost
+#   vars:
+#     networks:
+#       red:
+#         subnet:
+#           address: 88.31.10.0/24
+#         port_security_enabled: false
+#       local_1:
+#         subnet: 
+#           address: 192.168.1.0/24
+#         port_security_enabled: false
+#       remote_1:
+#         subnet: 
+#           address: 10.0.1.0/24
+#         port_security_enabled: false
+#       sat_1:
+#         subnet: 
+#           address: 172.128.1.0/24
+#         port_security_enabled: false
+#       local_2:
+#         subnet: 
+#           address: 192.168.2.0/24
+#         port_security_enabled: false
+#       remote_2:
+#         subnet: 
+#           address: 10.0.2.0/24
+#         port_security_enabled: false
+#       sat_2:
+#         subnet: 
+#           address: 172.128.2.0/24
+#         port_security_enabled: false
+#   vars_files:
+#     - ./vars/deploy_vars.yml
+
+#   tasks:
+#     - name: Deploy Networks
+#       include_role:
+#         name: deploy_network_instance
+#       loop: "{{ networks | dict2items }}"
+#       loop_control:
+#         loop_var: network
+
+
+# - name: Deploy pfSense Routers
+#   hosts: localhost
+#   vars:
+#     pf_routers:
+#       team_1_main:
+#         image: PFsense-2.6.0-Cloudinit
+#         image_size: 40
+#         flavor: medium
+#         connections:
+#           local_1:
+#             address: 192.168.1.1
+#             control: 192.168.1.250
+#           remote_1:
+#             address: 10.0.1.254
+#       outer_1:
+#         image: PFsense-2.6.0-Cloudinit
+#         image_size: 40
+#         flavor: medium
+#         connections:
+#           sat_1:
+#             address: 172.128.1.1
+#             control: 172.128.1.250
+#           remote_1:
+#             address: 10.0.1.253
+#       team_2_main:
+#         image: PFsense-2.6.0-Cloudinit
+#         image_size: 40
+#         flavor: medium
+#         connections:
+#           local_2:
+#             address: 192.168.2.1
+#             control: 192.168.2.250
+#           remote_2:
+#             address: 10.0.2.254
+#       outer_2:
+#         image: PFsense-2.6.0-Cloudinit
+#         image_size: 40
+#         flavor: medium
+#         connections:
+#           sat_2:
+#             address: 172.128.2.1
+#             control: 172.128.2.250
+#           remote_2:
+#             address: 10.0.2.253
+#       link:
+#         image: PFsense-2.6.0-Cloudinit
+#         image_size: 40
+#         flavor: medium
+#         connections:
+#           remote_1:
+#             address: 10.0.1.252
+#             control: 10.0.1.250
+#           remote_2:
+#             address: 10.0.2.252
+#           red:
+#             address: 88.31.10.1
+#   vars_files:
+#     - ./vars/deploy_vars.yml
+
+#   tasks:
+#     - name: Deploy pfSense Routers
+#       include_role:
+#         name: deploy_pfsense_instance
+#       loop: "{{ pf_routers | dict2items }}"
+#       loop_control:
+#         loop_var: router
+
+#     - name: Pause for instance setup
+#       pause: 
+#         seconds: 60
+
+
+- name: Configure pfSense Instances
+  hosts: pfsense
+  vars:
+    params: "{{ lookup('pfsensible.core.pfsense', './vars/pfsense_config.yml', 'all_definitions') }}"
+
+  tasks:
+    - name: Configure pfSense Instances
+      include_role:
+        name: config_pfsense
+
+
+# - name: Deploy Openstack Routers
+#   hosts: localhost
+#   vars:
+#     op_routers:
+#       link:
+#         internet: false
+#         interfaces:
+#           - net: remote_1_net
+#             subnet: remote_1_subnet
+#           - net: remote_2_net
+#             subnet: remote_2_subnet
+#           - net: red_net
+#             subnet: red_subnet
+#   vars_files:
+#     - ./vars/deploy_vars.yml
+
+#   tasks:
+#     - name: Deploy Openstack Routers
+#       include_role:
+#         name: deploy_openstack_router
+#       loop: "{{ op_routers | dict2items }}"
+#       loop_control:
+#         loop_var: router
+
+
+# - name: Deploy Infrastructure
+#   hosts: localhost
+#   vars:
+#     instances:
+#       local_example:
+#         image: UbuntuJammy2204-Desktop
+#         image_size: 40
+#         flavor: small
+#         network: local_1
+#         fixed_address: 10.0.1.10
+#         control_port_addr: 10.0.1.254
+#       remote_example:
+#         image: UbuntuJammy2204-Desktop
+#         image_size: 40
+#         flavor: small
+#         network: remote_1
+#         fixed_address: 10.0.2.10
+#         control_port_addr: 10.0.2.254
+#       local_2_example:
+#         image: UbuntuJammy2204-Desktop
+#         image_size: 40
+#         flavor: small
+#         network: local_2
+#         fixed_address: 10.0.1.10
+#         control_port_addr: 10.0.3.254
+#       remote_2_example:
+#         image: UbuntuJammy2204-Desktop
+#         image_size: 40
+#         flavor: small
+#         network: remote_2
+#         fixed_address: 10.0.2.10
+#         control_port_addr: 10.0.2.254
+
+- name: Cleanup Ports
+  hosts: localhost
+  vars:
+    pf_routers: "{{ hostvars['localhost']['pf_routers'] }}"
+  vars_files:
+    - ./vars/deploy_vars.yml
+  
+  tasks:
+    - name: "Delete Port {{ router.key }}"
+      include_role:
+        name: cleanup
+      loop: "{{ pf_routers | dict2items }}"
+      loop_control:
+        loop_var: router
