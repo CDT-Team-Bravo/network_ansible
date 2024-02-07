@@ -7,8 +7,8 @@
 pfsenses:
   team_1_main_pfsense: {
     interfaces: {
-      WAN:                { ip: 10.0.1.254/24 },
-      LAN:                { ip: 192.168.1.1/24 }
+      WAN:                  { ip: 10.0.1.254/24 },
+      LAN:                  { ip: 192.168.1.1/24 }
     }
   }
 
@@ -37,7 +37,7 @@ pfsenses:
     interfaces: {
       WAN:                  { ip: 88.31.10.1/24 },
       LAN:                  { ip: 10.0.1.252/24 },
-      OPT1:                 { ip: 10.0.2.252/24 }
+      # OPT1:                 { ip: 10.0.2.252/24 }
       }
     }
 

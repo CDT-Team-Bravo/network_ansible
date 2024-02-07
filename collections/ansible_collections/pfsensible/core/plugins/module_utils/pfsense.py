@@ -648,15 +648,15 @@ class PFSenseModule(object):
         cmd = '<?php\n'
         cmd += command
         cmd += '\n?>\n'
-        print(f'Running: {cmd}\n\n')
+        # print(f'Running: {cmd}\n\n')
         (dummy, stdout, stderr) = self.module.run_command('/usr/local/bin/php', data=cmd)
-        # start_of_json = stdout.index('{')
-        # end_of_json = stdout.rindex('}') + 1
+        start_of_json = stdout.index('{')
+        end_of_json = stdout.rindex('}') + 1
         # TODO: check stderr for errors
-        print(f'STDOUT: {stdout}\n\n')
-        print(f'STDERR: {stderr}\n\n')
-        # return json.loads(stdout[start_of_json:end_of_json])
-        return json.loads(stdout)
+        # print(f'STDOUT: {stdout}\n\n')
+        # print(f'STDERR: {stderr}\n\n')
+        return json.loads(stdout[start_of_json:end_of_json])
+        # return json.loads(stdout)
 
     def write_config(self, descr='Updated by ansible pfsense module'):
         """ Generate config file """

@@ -106,6 +106,7 @@
             address: 10.0.2.252
           red:
             address: 88.31.10.1
+            control: 88.31.10.250
   vars_files:
     - ./vars/deploy_vars.yml
 
@@ -116,6 +117,10 @@
       loop: "{{ pf_routers | dict2items }}"
       loop_control:
         loop_var: router
+
+    # - name: Register pf_routers global
+    #   set_fact:
+    #     pf_routers: "{{ pf_routers }}"
 
     - name: Pause for instance setup
       pause: 
@@ -128,7 +133,10 @@
     params: "{{ lookup('pfsensible.core.pfsense', './vars/pfsense_config.yml', 'all_definitions') }}"
 
   tasks:
-    - name: Configure pfSense Instances
+    # - name: Configure Interfaces
+    #   include_role:
+    #     name: config_pfsense
+    - name: Configure Firewall Rules
       include_role:
         name: config_pfsense
 

@@ -37,7 +37,7 @@
 - name: Register Port ID
   when: item.value.control is defined
   set_fact:
-    routers: "{{ pf_routers | combine({ router.key: { 'connections': { item.key: { 'port_id':  (port_create_results.results[current_idx].stdout | from_json).id}}}}, recursive=true) }}"
+    pf_routers: "{{ pf_routers | combine({ router.key: { 'connections': { item.key: { 'port_id':  (port_create_results.results[current_idx].stdout | from_json).id}}}}, recursive=true) }}"
   loop: "{{ router.value.connections | dict2items }}"
   loop_control:
     index_var: current_idx
