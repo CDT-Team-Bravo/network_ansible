@@ -3,8 +3,8 @@ default_key_name: remote
 ansible_control_key_name: netDeploy
 
 deploy_box:
-  id: "53954658-1ee8-4de9-b768-cf40e91cc536"
   name: deploy
+  id: "53954658-1ee8-4de9-b768-cf40e91cc536"
 
 deploy_net:
   name: grey_net
@@ -12,3 +12,10 @@ deploy_net:
   subnet:
     name: grey_subnet
     id: "2f3336e6-dc5e-4544-a562-cce68c830339"
+
+sshjump_net:
+  name: SSHJumpNet
+  id: "f81a7f95-b0b3-4e97-870b-3f21c531e54f"
+  subnet:
+    name: teleport
+    id: "7db5232a-76d9-4622-876b-02dd959e7d2f"

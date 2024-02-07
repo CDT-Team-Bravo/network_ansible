@@ -12,34 +12,34 @@ pfsenses:
     }
   }
 
-  # outer_1_pfsense: {
-  #   interfaces: {
-  #     WAN:                  { ip: 10.0.1.253/24 },
-  #     LAN:                  { ip: 172.128.1.1/24 }
-  #   }
-  # }
+  outer_1_pfsense: {
+    interfaces: {
+      WAN:                  { ip: 10.0.1.253/24 },
+      LAN:                  { ip: 172.128.1.1/24 }
+    }
+  }
 
-  # team_2_main_pfsense: {
-  #   interfaces: {
-  #     WAN:                  { ip: 10.0.2.254/24 },
-  #     LAN:                  { ip: 192.168.2.1/24 }
-  #   }
-  # }
+  team_2_main_pfsense: {
+    interfaces: {
+      WAN:                  { ip: 10.0.2.254/24 },
+      LAN:                  { ip: 192.168.2.1/24 }
+    }
+  }
 
-  # outer_2_pfsense: {
-  #   interfaces: {
-  #     WAN:                  { ip: 10.0.2.253/24 },
-  #     LAN:                  { ip: 172.128.2.1/24 }
-  #   }
-  # }
+  outer_2_pfsense: {
+    interfaces: {
+      WAN:                  { ip: 10.0.2.253/24 },
+      LAN:                  { ip: 172.128.2.1/24 }
+    }
+  }
 
-  # link_pfsense: {
-  #   interfaces: {
-  #     WAN:                  { ip: 88.31.10.1/24 },
-  #     LAN:                  { ip: 10.0.1.252/24 },
-  #     OPT1:                 { ip: 10.0.2.252/24 }
-  #     }
-  #   }
+  link_pfsense: {
+    interfaces: {
+      WAN:                  { ip: 88.31.10.1/24 },
+      LAN:                  { ip: 10.0.1.252/24 },
+      OPT1:                 { ip: 10.0.2.252/24 }
+      }
+    }
 
 
 #########################################################################################################################################
@@ -83,30 +83,30 @@ rules:
 #########################################################################################################################################
 
 hosts_aliases:
-  # red:                  { ip: 88.31.10.0/24 }
-  # red_r1_w:             { ip: 88.31.10.1 }
+  red:                  { ip: 88.31.10.0/24 }
+  red_r1_w:             { ip: 88.31.10.1 }
 
-  # t1_local:             { ip: 192.168.1.0/24 }
-  # t1_local_r1_r:        { ip: 192.168.1.1 }
+  t1_local:             { ip: 192.168.1.0/24 }
+  t1_local_r1_r:        { ip: 192.168.1.1 }
 
-  # t1_remote:            { ip: 10.0.1.0/24 }
-  # t1_remote_r1_l:       { ip: 10.0.1.254 }
-  # t1_remote_r2_s:       { ip: 10.0.1.253 }
-  # t1_remote_r3_r:       { ip: 10.0.1.252 }
+  t1_remote:            { ip: 10.0.1.0/24 }
+  t1_remote_r1_l:       { ip: 10.0.1.254 }
+  t1_remote_r2_s:       { ip: 10.0.1.253 }
+  t1_remote_r3_r:       { ip: 10.0.1.252 }
 
-  # t1_sat:               { ip: 172.128.1.0/24 }
-  # t1_sat_r1_r:          { ip: 172.128.1.1 }
+  t1_sat:               { ip: 172.128.1.0/24 }
+  t1_sat_r1_r:          { ip: 172.128.1.1 }
 
-  # t2_local:             { ip: 192.168.2.0/24 }
-  # t2_local_r1_r:        { ip: 192.168.2.1 }
+  t2_local:             { ip: 192.168.2.0/24 }
+  t2_local_r1_r:        { ip: 192.168.2.1 }
 
-  # t2_remote:            { ip: 10.0.2.0/24 }
-  # t2_remote_r1_l:       { ip: 10.0.2.254 }
-  # t2_remote_r2_s:       { ip: 10.0.2.253 }
-  # t2_remote_r3_r:       { ip: 10.0.2.252 }
+  t2_remote:            { ip: 10.0.2.0/24 }
+  t2_remote_r1_l:       { ip: 10.0.2.254 }
+  t2_remote_r2_s:       { ip: 10.0.2.253 }
+  t2_remote_r3_r:       { ip: 10.0.2.252 }
 
-  # t2_sat:               { ip: 172.128.2.0/24 }
-  # t2_sat_r1_r:          { ip: 172.128.2.1 }
+  t2_sat:               { ip: 172.128.2.0/24 }
+  t2_sat_r1_r:          { ip: 172.128.2.1 }
 
   internet:             { ip: 0.0.0.0/0 }
 
@@ -125,8 +125,8 @@ hosts_aliases:
 
 ports_aliases:
   admin_ports:          { port: 22 80 443 }
-  # dns_port:             { port: 53 }
-  # rdp_port:             { port: 3389 }
-  # ssh_port:             { port: 22 }
-  # smb_ports:            { port: 135 137 139 445 }
-  # vnc_ports:            { port: 5900-5901 }
+  dns_port:             { port: 53 }
+  rdp_port:             { port: 3389 }
+  ssh_port:             { port: 22 }
+  smb_ports:            { port: 135 137 139 445 }
+  vnc_ports:            { port: 5900-5901 }
