@@ -1,0 +1,21 @@
+---
+- name: Config pfSense Gateway
+  pfsensible.core.pfsense_gateway:
+    name: "{{ gateway.key }}"
+    gateway: "{{ gateway.value.gateway }}"
+    interface: "{{ gateway.value.iface }}"
+    ipprotocol: inet # inet=ipv4, inetv6=ipv6
+  loop: "{{ router.value.gateways | dict2items }}"
+  loop_control:
+    loop_var: gateway
+    label: "{{ gateway.key }}"
+
+- name: Config Default Gateway
+  when: gateway.value.is_default is defined and gateway.value.is_default == true
+  pfsensible.core.pfsense_default_gateway:
+    gateway: "{{ gateway.key }}"
+    ipprotocol: inet # inet=ipv4, inetv6=ipv6
+  loop: "{{ router.value.gateways | dict2items }}"
+  loop_control:
+    loop_var: gateway
+    label: "{{ gateway.key }}"

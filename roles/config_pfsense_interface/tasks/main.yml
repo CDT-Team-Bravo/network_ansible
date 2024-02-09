@@ -1,0 +1,13 @@
+---
+- name: "Configure Interface"
+  pfsensible.core.pfsense_interface:
+    descr: "{{ interface.key }}"
+    interface: "{{ interface.value.iface }}"
+    ipv4_type: "{{ interface.value.ipv4_type }}"
+    ipv4_address: "{{ interface.value.ipv4 }}"
+    ipv4_prefixlen: "{{ interface.value.cidr }}"
+    enable: "{{ interface.value.enable }}"
+  loop: "{{ router.value.interfaces | dict2items }}"
+  loop_control:
+    loop_var: interface
+    label: "{{ interface.key }}"

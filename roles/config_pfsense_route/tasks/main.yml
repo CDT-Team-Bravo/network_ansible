@@ -1,0 +1,10 @@
+---
+- name: "Configure Static Route"
+  pfsensible.core.pfsense_route:
+    descr: "{{ route.key }}"   # name
+    gateway: "{{ route.value.gateway }}" # gatway route applies to
+    network: "{{ route.value.network }}" # destination/trigger network
+  loop: "{{ router.value.routes | dict2items }}"
+  loop_control:
+    loop_var: route
+    label: "{{ route.key }}"

@@ -7,39 +7,33 @@
 pfsenses:
   team_1_main_pfsense: {
     interfaces: {
-      WAN:                  { ip: 10.0.1.254/24 },
+      WAN:                  { ip: 88.31.10.1/24,  remote_networks: internet },
+      REMOTE:               { ip: 10.0.1.254/24,  remote_networks: main_1_remotes },
       LAN:                  { ip: 192.168.1.1/24 }
     }
   }
 
   outer_1_pfsense: {
     interfaces: {
-      WAN:                  { ip: 10.0.1.253/24 },
+      WAN:                  { ip: 10.0.1.253/24, remote_networks: outer_1_remotes },
       LAN:                  { ip: 172.128.1.1/24 }
     }
   }
 
   team_2_main_pfsense: {
     interfaces: {
-      WAN:                  { ip: 10.0.2.254/24 },
+      WAN:                  { ip: 88.31.10.254/24, remote_networks: internet },
+      REMOTE:               { ip: 10.0.2.254/24,   remote_networks: main_2_remotes },
       LAN:                  { ip: 192.168.2.1/24 }
     }
   }
 
   outer_2_pfsense: {
     interfaces: {
-      WAN:                  { ip: 10.0.2.253/24 },
+      WAN:                  { ip: 10.0.2.253/24, remote_networks: outer_2_remotes },
       LAN:                  { ip: 172.128.2.1/24 }
     }
   }
-
-  link_pfsense: {
-    interfaces: {
-      WAN:                  { ip: 88.31.10.1/24 },
-      LAN:                  { ip: 10.0.1.252/24 },
-      # OPT1:                 { ip: 10.0.2.252/24 }
-      }
-    }
 
 
 #########################################################################################################################################
@@ -50,20 +44,27 @@ rules:
   options: { log: yes }
 
   # CONFIG:
-  #   config_from_lan:        { src: paris_lan,       dst: 10.20.30.101,        protocol: tcp,      dst_port: admin_ports }
+  #   config_from_lan:        { src: t1_remote,       dst: 10.0.1.254,        protocol: tcp,      dst_port: admin_ports }
+  #   config_from_lan:        { src: t1_remote,       dst: 10.0.1.253,        protocol: tcp,      dst_port: admin_ports }
+  #   config_from_lan:        { src: t2_remote,       dst: 10.0.2.254,        protocol: tcp,      dst_port: admin_ports }
+  #   config_from_lan:        { src: t2_remote,       dst: 10.0.2.253,        protocol: tcp,      dst_port: admin_ports }
 
   ALLOW_ALL:
-    allow_all:              { src: any,             dst: any,                 protocol: any,      action: pass }
+    allow_all:              { src: any,             dst: any,                 protocol: any }
 
-  # ANTI_LOCKOUT:
-  #   anti_lockout:           { src: any,             dst: any,                 protocol: tcp,      dst_port: admin_ports }
+  # ANTI_GREY_LOCKOUT:
+  #   anti_base_lockout:      { src: grey_lan,             dst: any,                 protocol: any }
+  #   anti_gateway_lockout:   { src: grey_gateway,         dst: any,                 protocol: any }
+  #   anti_s1con_lockout:     { src: grey_s1_con,          dst: any,                 protocol: any }
+  #   anti_s2con_lockout:     { src: grey_s2_con,          dst: any,                 protocol: any }
+  #   anti_rcon_lockout:      { src: grey_r_con,           dst: any,                 protocol: any }
 
   # ICMP:
-  #   block_redirects:        { src: any,             dst: any,                 protocol: icmp,     icmptype: redir, action: block, log: yes }
   #   allow_icmp:             { src: any,             dst: any,                 protocol: icmp,     icmptype: any, log: no }
 
-  # OSPF:
-  #   ospf_vtis:              { src: ipsec_vtis,      dst: ipsec_vtis,          protocol: ospf,     log: no }
+  # BLUE_INTERFERENCE:
+  #   block_blue_a:           { src: blue_1_lans,     dst: blue_2_lans,         protocol: any,      action: block}
+  #   block_blue_b:           { src: blue_2_lans,     dst: blue_1_lans,         protocol: any,      action: block}
 
   # FROM_FARGO:
   #   config_from_fargo:      { src: fargo_station,   dst: 10.20.30.101,        protocol: tcp,      dst_port: admin_ports }
@@ -83,32 +84,33 @@ rules:
 #########################################################################################################################################
 
 hosts_aliases:
-  red:                  { ip: 88.31.10.0/24 }
-  red_r1_w:             { ip: 88.31.10.1 }
+  grey_lan:             { ip: 10.0.0.0/24 }
+  grey_gateway:         { ip: 10.0.1.252 }
+  grey_s1_con:          { ip: 172.128.1.250 }
+  grey_s2_con:          { ip: 172.128.2.250 }
+  grey_r_con:           { ip: 88.31.10.250 }
+
+  red_lan:              { ip: 88.31.10.0/24 }
 
   t1_local:             { ip: 192.168.1.0/24 }
-  t1_local_r1_r:        { ip: 192.168.1.1 }
-
   t1_remote:            { ip: 10.0.1.0/24 }
-  t1_remote_r1_l:       { ip: 10.0.1.254 }
-  t1_remote_r2_s:       { ip: 10.0.1.253 }
-  t1_remote_r3_r:       { ip: 10.0.1.252 }
-
   t1_sat:               { ip: 172.128.1.0/24 }
-  t1_sat_r1_r:          { ip: 172.128.1.1 }
+  blue_1_lans:          { ip: t1_local t1_remote t1_sat}
+  outer_1_remotes:      { ip: t1_remote grey_lan red_lan }
+  main_1_remotes:       { ip: grey_lan t1_sat }
 
   t2_local:             { ip: 192.168.2.0/24 }
-  t2_local_r1_r:        { ip: 192.168.2.1 }
-
   t2_remote:            { ip: 10.0.2.0/24 }
-  t2_remote_r1_l:       { ip: 10.0.2.254 }
-  t2_remote_r2_s:       { ip: 10.0.2.253 }
-  t2_remote_r3_r:       { ip: 10.0.2.252 }
-
   t2_sat:               { ip: 172.128.2.0/24 }
-  t2_sat_r1_r:          { ip: 172.128.2.1 }
+  blue_2_lans:          { ip: t2_local t2_remote t2_sat}
+  outer_2_remotes:      { ip: t2_remote grey_lan red_lan }
+  main_2_remotes:       { ip: grey_lan t2_sat }
 
   internet:             { ip: 0.0.0.0/0 }
+
+
+  # t2_local_remotes:     { ip: t2_remote }
+  # t2_remote_remotes:    { ip: t2_local t2_sat}
 
   # paris_lan:            { ip: 10.20.30.0/24 }
   # paris_router:         { ip: 10.20.30.1 }

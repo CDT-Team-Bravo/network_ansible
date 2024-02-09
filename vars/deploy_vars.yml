@@ -12,6 +12,8 @@ deploy_net:
   subnet:
     name: grey_subnet
     id: "2f3336e6-dc5e-4544-a562-cce68c830339"
+  router:
+    name: main_openstack
 
 sshjump_net:
   name: SSHJumpNet

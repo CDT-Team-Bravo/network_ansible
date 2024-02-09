@@ -1,0 +1,71 @@
+---
+- name: Init Deploy Net
+  hosts: localhost
+  vars:
+    networks:
+      grey:
+        subnet:
+          address: 10.0.0.0/24
+        port_security_enabled: true
+  
+    op_routers:
+      main:
+        internet: true
+        interfaces:
+          - net: grey_net
+            subnet: grey_subnet
+      
+    instances:
+      grey_control:
+        image: UbuntuJammy2204-Desktop
+        image_size: 40
+        flavor: small
+        networks: 
+          grey:
+            fixed_ipv4: 10.0.0.100
+        sshjumpable: true
+        key_name: remote
+  vars_files:
+    - ./vars/deploy_vars.yml
+
+  tasks:
+    - name: "Deploy {{ network.key }}"
+      include_role:
+        name: deploy_network_instance
+      loop: "{{ networks | dict2items }}"
+      loop_control:
+        loop_var: network
+
+    - name: "Connect Internet"
+      include_role:
+        name: deploy_openstack_router
+      loop: "{{ op_routers | dict2items }}"
+      loop_control:
+        loop_var: router
+
+    - name: Deploy control instance
+      include_role:
+        name: deploy_device_instance
+      loop: "{{ instances | dict2items }}"
+      loop_control:
+        loop_var: instance
+
+- name: Configure control instance
+  hosts: deploy
+  become: yes
+  tasks:
+    - name: Install Ansible
+      apt:
+        update_cache: true
+        name:
+          - ansible
+          - sshpass
+          - python3-pip
+
+    - name: Install openstack-cli
+      cmd:
+        command: "pip3 install python-openstackclient"
+    
+    - name:
+
+

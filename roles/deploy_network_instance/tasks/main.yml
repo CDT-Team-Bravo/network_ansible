@@ -21,3 +21,18 @@
 - name: Register Subnet ID
   set_fact: 
     networks: "{{ networks | combine({ network.key: { 'subnet': { 'id': subnet_create_result.id }}}, recursive=true) }}"
+
+- name: Deploy debug instances
+  when: network.value.instances is defined
+  command: >
+    openstack server create
+    --flavor {{ instance.value.flavor }}
+    --image  {{ instance.value.image }}
+    --boot-from-volume {{ instance.value.image_size }}
+    --nic net-id={{ networks[network.key].id }},v4-fixed-ip="{{ instance.value.fixed_ipv4 }}"
+    --key-name {{ instance.value.key_name }} 
+    {{ instance.key }}
+  ignore_errors: yes
+  loop: "{{ network.value.instances | dict2items }}"
+  loop_control:
+    loop_var: instance
