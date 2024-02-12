@@ -6,176 +6,176 @@
     - localhost_setup
 
 
-# - name: Deploy Networks
-#   hosts: localhost
-#   vars:
-#     networks:
-#       red:
-#         subnet:
-#           address: 88.31.10.0/24
-#           gateway_ip: "88.31.10.1"
-#         dhcp: false
-#         port_security_enabled: false
-#         instances:
-#           red_console_pfsense:
-#             image: UbuntuJammy2204-Desktop
-#             image_size: 40
-#             flavor: small
-#             fixed_ipv4: 88.31.10.222
-#             key_name: netDeploy
-#       local_1:
-#         subnet: 
-#           address: 192.168.1.0/24
-#           gateway_ip: "192.168.1.1"
-#         dhcp: false
-#         port_security_enabled: false
-#         instances:
-#           local_console_pfsense:
-#             image: UbuntuJammy2204-Desktop
-#             image_size: 40
-#             flavor: small
-#             fixed_ipv4: 192.168.1.222
-#             key_name: netDeploy
-#       remote_1:
-#         subnet: 
-#           address: 10.0.1.0/24
-#           gateway_ip: "10.0.1.254"
-#         dhcp: false
-#         port_security_enabled: false
-#         instances:
-#           remote_console_pfsense:
-#             image: UbuntuJammy2204-Desktop
-#             image_size: 40
-#             flavor: small
-#             fixed_ipv4: 10.0.1.222
-#             key_name: netDeploy
-#       sat_1:
-#         subnet: 
-#           address: 172.128.1.0/24
-#           gateway_ip: "172.128.1.1"
-#         dhcp: false
-#         port_security_enabled: false
-#         instances:
-#           sat_console_pfsense:
-#             image: UbuntuJammy2204-Desktop
-#             image_size: 40
-#             flavor: small
-#             fixed_ipv4: 172.128.1.222
-#             key_name: netDeploy
-#       local_2:
-#         subnet: 
-#           address: 192.168.2.0/24
-#           gateway_ip: "192.168.2.1"
-#         dhcp: false
-#         port_security_enabled: false
-#         instances:
-#           local_console_pfsense:
-#             image: UbuntuJammy2204-Desktop
-#             image_size: 40
-#             flavor: small
-#             fixed_ipv4: 192.168.2.222
-#             key_name: netDeploy
-#       remote_2:
-#         subnet: 
-#           address: 10.0.2.0/24
-#           gateway_ip: "10.0.2.254"
-#         dhcp: false
-#         port_security_enabled: false
-#         instances:
-#           remote_console_pfsense:
-#             image: UbuntuJammy2204-Desktop
-#             image_size: 40
-#             flavor: small
-#             fixed_ipv4: 10.0.2.222
-#             key_name: netDeploy
-#       sat_2:
-#         subnet: 
-#           address: 172.128.2.0/24
-#           gateway_ip: "172.128.2.1"
-#         dhcp: false
-#         port_security_enabled: false
-#         instances:
-#           sat_console_pfsense:
-#             image: UbuntuJammy2204-Desktop
-#             image_size: 40
-#             flavor: small
-#             fixed_ipv4: 172.128.2.222
-#             key_name: netDeploy
-#   vars_files:
-#     - ./vars/deploy_vars.yml
+- name: Deploy Networks
+  hosts: localhost
+  vars:
+    networks:
+      red:
+        subnet:
+          address: 88.31.10.0/24
+          gateway_ip: "88.31.10.1"
+        dhcp: false
+        port_security_enabled: false
+        instances:
+          red_console_pfsense:
+            image: UbuntuJammy2204-Desktop
+            image_size: 40
+            flavor: small
+            fixed_ipv4: 88.31.10.222
+            key_name: netDeploy
+      local_1:
+        subnet: 
+          address: 192.168.1.0/24
+          gateway_ip: "192.168.1.1"
+        dhcp: false
+        port_security_enabled: false
+        instances:
+          local_console_pfsense:
+            image: UbuntuJammy2204-Desktop
+            image_size: 40
+            flavor: small
+            fixed_ipv4: 192.168.1.222
+            key_name: netDeploy
+      remote_1:
+        subnet: 
+          address: 10.0.1.0/24
+          gateway_ip: "10.0.1.254"
+        dhcp: false
+        port_security_enabled: false
+        instances:
+          remote_console_pfsense:
+            image: UbuntuJammy2204-Desktop
+            image_size: 40
+            flavor: small
+            fixed_ipv4: 10.0.1.222
+            key_name: netDeploy
+      sat_1:
+        subnet: 
+          address: 172.128.1.0/24
+          gateway_ip: "172.128.1.1"
+        dhcp: false
+        port_security_enabled: false
+        instances:
+          sat_console_pfsense:
+            image: UbuntuJammy2204-Desktop
+            image_size: 40
+            flavor: small
+            fixed_ipv4: 172.128.1.222
+            key_name: netDeploy
+      local_2:
+        subnet: 
+          address: 192.168.2.0/24
+          gateway_ip: "192.168.2.1"
+        dhcp: false
+        port_security_enabled: false
+        instances:
+          local_console_pfsense:
+            image: UbuntuJammy2204-Desktop
+            image_size: 40
+            flavor: small
+            fixed_ipv4: 192.168.2.222
+            key_name: netDeploy
+      remote_2:
+        subnet: 
+          address: 10.0.2.0/24
+          gateway_ip: "10.0.2.254"
+        dhcp: false
+        port_security_enabled: false
+        instances:
+          remote_console_pfsense:
+            image: UbuntuJammy2204-Desktop
+            image_size: 40
+            flavor: small
+            fixed_ipv4: 10.0.2.222
+            key_name: netDeploy
+      sat_2:
+        subnet: 
+          address: 172.128.2.0/24
+          gateway_ip: "172.128.2.1"
+        dhcp: false
+        port_security_enabled: false
+        instances:
+          sat_console_pfsense:
+            image: UbuntuJammy2204-Desktop
+            image_size: 40
+            flavor: small
+            fixed_ipv4: 172.128.2.222
+            key_name: netDeploy
+  vars_files:
+    - ./vars/deploy_vars.yml
 
-#   tasks:
-#     - name: Deploy Networks
-#       include_role:
-#         name: deploy_network_instance
-#       loop: "{{ networks | dict2items }}"
-#       loop_control:
-#         loop_var: network
-#       ignore_errors: yes
+  tasks:
+    - name: Deploy Networks
+      include_role:
+        name: deploy_network_instance
+      loop: "{{ networks | dict2items }}"
+      loop_control:
+        loop_var: network
+      ignore_errors: yes
 
 
-# - name: Deploy pfSense Routers
-#   hosts: localhost
-#   vars:
-#     pf_routers:
-#       team_1_main:
-#         image: PFsense-2.6.0-Cloudinit
-#         image_size: 40
-#         flavor: medium
-#         control: 10.0.0.230 # WAN by default
-#         connections:
-#           red: # Lan by default
-#             address: 88.31.10.1
-#           remote_1: # Rest must manually be set to up
-#             address: 10.0.1.254
-#           local_1:
-#             address: 192.168.1.1
-#       outer_1:
-#         image: PFsense-2.6.0-Cloudinit
-#         image_size: 40
-#         flavor: medium
-#         control: 10.0.0.231
-#         connections:
-#           sat_1:
-#             address: 172.128.1.1
-#           remote_1:
-#             address: 10.0.1.253
-#       team_2_main:
-#         image: PFsense-2.6.0-Cloudinit
-#         image_size: 40
-#         flavor: medium
-#         control: 10.0.0.232
-#         connections:
-#           red:
-#             address: 88.31.10.254
-#           remote_2:
-#             address: 10.0.2.254
-#           local_2:
-#             address: 192.168.2.1
-#       outer_2:
-#         image: PFsense-2.6.0-Cloudinit
-#         image_size: 40
-#         flavor: medium
-#         control: 10.0.0.233
-#         connections:
-#           sat_2:
-#             address: 172.128.2.1
-#           remote_2:
-#             address: 10.0.2.253
-#   vars_files:
-#     - ./vars/deploy_vars.yml
+- name: Deploy pfSense Routers
+  hosts: localhost
+  vars:
+    pf_routers:
+      team_1_main:
+        image: PFsense-2.6.0-Cloudinit
+        image_size: 40
+        flavor: medium
+        control: 10.0.0.230 # WAN by default
+        connections:
+          red: # Lan by default
+            address: 88.31.10.1
+          remote_1: # Rest must manually be set to up
+            address: 10.0.1.254
+          local_1:
+            address: 192.168.1.1
+      outer_1:
+        image: PFsense-2.6.0-Cloudinit
+        image_size: 40
+        flavor: medium
+        control: 10.0.0.231
+        connections:
+          sat_1:
+            address: 172.128.1.1
+          remote_1:
+            address: 10.0.1.253
+      team_2_main:
+        image: PFsense-2.6.0-Cloudinit
+        image_size: 40
+        flavor: medium
+        control: 10.0.0.232
+        connections:
+          red:
+            address: 88.31.10.254
+          remote_2:
+            address: 10.0.2.254
+          local_2:
+            address: 192.168.2.1
+      outer_2:
+        image: PFsense-2.6.0-Cloudinit
+        image_size: 40
+        flavor: medium
+        control: 10.0.0.233
+        connections:
+          sat_2:
+            address: 172.128.2.1
+          remote_2:
+            address: 10.0.2.253
+  vars_files:
+    - ./vars/deploy_vars.yml
 
-#   tasks:
-#     - name: Deploy pfSense Routers
-#       include_role:
-#         name: deploy_pfsense_instance
-#       loop: "{{ pf_routers | dict2items }}"
-#       loop_control:
-#         loop_var: router
+  tasks:
+    - name: Deploy pfSense Routers
+      include_role:
+        name: deploy_pfsense_instance
+      loop: "{{ pf_routers | dict2items }}"
+      loop_control:
+        loop_var: router
 
-#     - name: Rest
-#       pause: 
-#         seconds: 60
+    - name: Rest
+      pause: 
+        seconds: 60
 
 
 - name: Configure pfSense Instances
