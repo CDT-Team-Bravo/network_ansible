@@ -5,33 +5,37 @@
 #########################################################################################################################################
 
 pfsenses:
-  team_1_main_pfsense: {
+  main_1: {
     interfaces: {
-      WAN:                  { ip: 88.31.10.1/24,  remote_networks: internet },
-      REMOTE:               { ip: 10.0.1.254/24,  remote_networks: main_1_remotes },
-      LAN:                  { ip: 192.168.1.1/24 }
+      control:              { ip: 10.0.0.230/24,   remote_networks: internet },
+      wan:                  { ip: 88.31.10.1/24,   remote_networks: blue_2_lans },
+      remote:               { ip: 10.0.1.254/24,   remote_networks: main_1_remotes },
+      lan:                  { ip: 192.168.1.1/24 }
     }
   }
 
-  outer_1_pfsense: {
+  outer_1: {
     interfaces: {
-      WAN:                  { ip: 10.0.1.253/24, remote_networks: outer_1_remotes },
-      LAN:                  { ip: 172.128.1.1/24 }
+      control:              { ip: 10.0.0.231/24,   remote_networks: internet },
+      wan:                  { ip: 10.0.1.253/24,   remote_networks: outer_1_remotes },
+      lan:                  { ip: 172.128.1.1/24 }
     }
   }
 
-  team_2_main_pfsense: {
+  main_2: {
     interfaces: {
-      WAN:                  { ip: 88.31.10.254/24, remote_networks: internet },
-      REMOTE:               { ip: 10.0.2.254/24,   remote_networks: main_2_remotes },
-      LAN:                  { ip: 192.168.2.1/24 }
+      control:              { ip: 10.0.0.232/24,   remote_networks: internet },
+      wan:                  { ip: 88.31.10.254/24, remote_networks: blue_1_lans },
+      remote:               { ip: 10.0.2.254/24,   remote_networks: main_2_remotes },
+      lan:                  { ip: 192.168.2.1/24 }
     }
   }
 
-  outer_2_pfsense: {
+  outer_2: {
     interfaces: {
-      WAN:                  { ip: 10.0.2.253/24, remote_networks: outer_2_remotes },
-      LAN:                  { ip: 172.128.2.1/24 }
+      control:              { ip: 10.0.0.233/24,   remote_networks: internet },
+      wan:                  { ip: 10.0.2.253/24,   remote_networks: outer_2_remotes },
+      lan:                  { ip: 172.128.2.1/24 }
     }
   }
 
@@ -49,8 +53,13 @@ rules:
   #   config_from_lan:        { src: t2_remote,       dst: 10.0.2.254,        protocol: tcp,      dst_port: admin_ports }
   #   config_from_lan:        { src: t2_remote,       dst: 10.0.2.253,        protocol: tcp,      dst_port: admin_ports }
 
+  BLOCK_INTERFERENCE:
+    block_to_b1:            { src: blue_2_router,     dst: blue_1_lans,       protocol: any,      action: block }
+    block_to_b2:            { src: blue_1_router,     dst: blue_2_lans,       protocol: any,      action: block }
+
   ALLOW_ALL:
-    allow_all:              { src: any,             dst: any,                 protocol: any }
+    allow_all:              { src: any,             dst: any,               protocol: any,      action: pass }
+
 
   # ANTI_GREY_LOCKOUT:
   #   anti_base_lockout:      { src: grey_lan,             dst: any,                 protocol: any }
@@ -85,16 +94,12 @@ rules:
 
 hosts_aliases:
   grey_lan:             { ip: 10.0.0.0/24 }
-  grey_gateway:         { ip: 10.0.1.252 }
-  grey_s1_con:          { ip: 172.128.1.250 }
-  grey_s2_con:          { ip: 172.128.2.250 }
-  grey_r_con:           { ip: 88.31.10.250 }
-
   red_lan:              { ip: 88.31.10.0/24 }
 
   t1_local:             { ip: 192.168.1.0/24 }
   t1_remote:            { ip: 10.0.1.0/24 }
   t1_sat:               { ip: 172.128.1.0/24 }
+  blue_1_router:        { ip: 88.31.10.1 }
   blue_1_lans:          { ip: t1_local t1_remote t1_sat}
   outer_1_remotes:      { ip: t1_remote grey_lan red_lan }
   main_1_remotes:       { ip: grey_lan t1_sat }
@@ -102,6 +107,7 @@ hosts_aliases:
   t2_local:             { ip: 192.168.2.0/24 }
   t2_remote:            { ip: 10.0.2.0/24 }
   t2_sat:               { ip: 172.128.2.0/24 }
+  blue_2_router:        { ip: 88.31.10.254 }
   blue_2_lans:          { ip: t2_local t2_remote t2_sat}
   outer_2_remotes:      { ip: t2_remote grey_lan red_lan }
   main_2_remotes:       { ip: grey_lan t2_sat }

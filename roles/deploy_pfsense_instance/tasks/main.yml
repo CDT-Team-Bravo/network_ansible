@@ -8,6 +8,10 @@
     nic_params: "{{ nic_params }} --nic net-id={{ networks[item.key].id }},v4-fixed-ip=\"{{ item.value.address }}\""
   loop: "{{ router.value.connections | dict2items }}"
 
+- name: Add control interface
+  set_fact:
+    nic_params: "--nic net-id={{ deploy_net.id }},v4-fixed-ip=\"{{ router.value.control }}\" {{ nic_params }}"
+
 - name: "Create pfSense instance - {{ router.key }}_pfsense"
   command: >
     openstack server create
@@ -17,27 +21,28 @@
     {{ nic_params }}
     --key-name {{ ansible_control_key_name }}
     {{ router.key }}_pfsense
+    --wait
   ignore_errors: yes
 
-- name: Create port to instance
-  when: item.value.control is defined
-  shell:
-    cmd: "openstack port create --network {{ networks[item.key].id }} --fixed-ip subnet={{ networks[item.key].subnet.id }},ip-address={{ item.value.control }} --format json {{ router.key }}_control_port"
-  loop: "{{ router.value.connections | dict2items }}"
-  register: port_create_results
+# - name: Create port to instance
+#   when: item.value.control is defined
+#   shell:
+#     cmd: "openstack port create --network {{ networks[item.key].id }} --fixed-ip subnet={{ networks[item.key].subnet.id }},ip-address={{ item.value.control }} --format json {{ router.key }}_control_port"
+#   loop: "{{ router.value.connections | dict2items }}"
+#   register: port_create_results
 
-- name: Attach ports to instances
-  when: item.value.control is defined
-  shell:
-    cmd: "openstack server add port {{ deploy_box.id }} {{ (port_create_results.results[current_idx].stdout | from_json).id }}"
-  loop: "{{ router.value.connections | dict2items }}"
-  loop_control:
-    index_var: current_idx
+# - name: Attach ports to instances
+#   when: item.value.control is defined
+#   shell:
+#     cmd: "openstack server add port {{ deploy_box.id }} {{ (port_create_results.results[current_idx].stdout | from_json).id }}"
+#   loop: "{{ router.value.connections | dict2items }}"
+#   loop_control:
+#     index_var: current_idx
 
-- name: Register Port ID
-  when: item.value.control is defined
-  set_fact:
-    pf_routers: "{{ pf_routers | combine({ router.key: { 'connections': { item.key: { 'port_id':  (port_create_results.results[current_idx].stdout | from_json).id}}}}, recursive=true) }}"
-  loop: "{{ router.value.connections | dict2items }}"
-  loop_control:
-    index_var: current_idx
+# - name: Register Port ID
+#   when: item.value.control is defined
+#   set_fact:
+#     pf_routers: "{{ pf_routers | combine({ router.key: { 'connections': { item.key: { 'port_id':  (port_create_results.results[current_idx].stdout | from_json).id}}}}, recursive=true) }}"
+#   loop: "{{ router.value.connections | dict2items }}"
+#   loop_control:
+#     index_var: current_idx

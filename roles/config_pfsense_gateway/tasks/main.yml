@@ -19,3 +19,22 @@
   loop_control:
     loop_var: gateway
     label: "{{ gateway.key }}"
+
+- name: Assign Gateway to Interface
+  when: interface.value.ipv4_gateway is defined
+  pfsensible.core.pfsense_interface:
+    descr: "{{ interface.key }}"
+    interface: "{{ interface.value.iface }}"
+    ipv4_type: "{{ interface.value.ipv4_type }}"
+    ipv4_address: "{{ interface.value.ipv4 }}"
+    ipv4_prefixlen: "{{ interface.value.cidr }}"
+    ipv4_gateway: "{{ interface.value.ipv4_gateway }}"
+    enable: true
+  loop: "{{ router.value.interfaces | dict2items }}"
+  loop_control:
+    loop_var: interface
+  register: results
+
+- name: debug assignment
+  debug:
+    msg: "{{ results }}"

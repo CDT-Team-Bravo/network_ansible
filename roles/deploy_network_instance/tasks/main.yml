@@ -16,6 +16,8 @@
     network_name: "{{ network.key }}_net"
     name: "{{ network.key }}_subnet"
     cidr: "{{ network.value.subnet.address }}"
+    gateway_ip: "{{ network.value.subnet.gateway_ip }}"
+    # is_dhcp_enabled: "{{ network.value.dhcp }}"
   register: subnet_create_result
 
 - name: Register Subnet ID
@@ -24,6 +26,15 @@
 
 - name: Deploy debug instances
   when: network.value.instances is defined
+  # os_server:
+  #   flavor: "{{ instance.value.flavor }}"
+  #   image: "{{ instance.value.image }}"
+  #   key_name: "{{ instance.value.key_name }}"
+  #   boot_from_volume: true
+  #   volume_size: "{{ instance.value.image_size }}"
+  #   name: "{{ instance.key }}"
+  #   nics: "net-id={{ networks[network.key].id }},v4-fixed-ip=\"{{ instance.value.fixed_ipv4 }}\""
+  #   terminate_volume: true
   command: >
     openstack server create
     --flavor {{ instance.value.flavor }}
@@ -32,6 +43,7 @@
     --nic net-id={{ networks[network.key].id }},v4-fixed-ip="{{ instance.value.fixed_ipv4 }}"
     --key-name {{ instance.value.key_name }} 
     {{ instance.key }}
+    --wait
   ignore_errors: yes
   loop: "{{ network.value.instances | dict2items }}"
   loop_control:

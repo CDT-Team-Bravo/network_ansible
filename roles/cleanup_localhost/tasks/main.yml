@@ -1,5 +1,5 @@
 ---
-- name: Delete ports
+- name: Delete instance config ports
   when: item.value.port_id is defined
   shell:
     cmd: "openstack port delete {{ item.value.port_id }}"
