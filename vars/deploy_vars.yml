@@ -8,10 +8,10 @@ deploy_box:
 
 deploy_net:
   name: grey_net
-  id: "3a5bb425-8a80-443a-9192-4b9dbeef5452"
+  id: "2c64cc3a-3ef0-4292-b0ed-ec1282a50533"
   subnet:
     name: grey_subnet
-    id: "2f3336e6-dc5e-4544-a562-cce68c830339"
+    id: "3bd62f26-6131-473c-bb09-88dd60ef4f6e"
   router:
     name: main_openstack
 

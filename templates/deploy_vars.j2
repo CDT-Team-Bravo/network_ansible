@@ -1,0 +1,21 @@
+---
+default_key_name: {{ default_key_name }}
+ansible_control_key_name: {{ ansible_control_key_name }}
+
+deploy_box:
+  name: grey_control
+  id: "{{ instances.grey_control.id }}"
+
+deploy_net:
+  name: grey_net
+  id: "{{ networks.grey.id }}"
+  subnet:
+    name: grey_subnet
+    id: "{{ networks.grey.subnet.id }}"
+
+sshjump_net:
+  name: "{{ sshjump_net.name }}"
+  id: "{{ sshjump_net.id }}"
+  subnet:
+    name: "{{ sshjump_net.subnet.name }}"
+    id: "{{ sshjump_net.subnet.id }}"

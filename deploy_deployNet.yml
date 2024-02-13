@@ -2,11 +2,48 @@
 - name: Init Deploy Net
   hosts: localhost
   vars:
+    default_key_name: "" # Fill in
+    ansible_control_key_name: "" # Fill in
+
+    sshjump_net:
+      name: SSHJumpNet
+      id: "f81a7f95-b0b3-4e97-870b-3f21c531e54f"
+      subnet:
+        name: teleport
+        id: "7db5232a-76d9-4622-876b-02dd959e7d2f"
+
     networks:
       grey:
         subnet:
           address: 10.0.0.0/24
+          gateway_ip: "10.0.0.254"
         port_security_enabled: false
+        host_routes:
+          - destination: 88.31.10.0/24
+            nexthop: 10.0.0.230
+          - destination: 10.0.1.0/24
+            nexthop: 10.0.0.230
+          - destination: 192.168.1.0/24
+            nexthop: 10.0.0.230
+          - destination: 172.128.1.0/24
+            nexthop: 10.0.0.230
+          - destination: 10.0.2.0/24
+            nexthop: 10.0.0.232
+          - destination: 192.168.2.0/24
+            nexthop: 10.0.0.232
+          - destination: 172.128.2.0/24
+            nexthop: 10.0.0.232
+        instances:
+          grey_control:
+            image: UbuntuJammy2204-Desktop
+            image_size: 40
+            flavor: small
+            networks: 
+              grey:
+                fixed_ipv4: 10.0.0.100
+            sshjumpable: true
+            key_name: remote
+            authorized_keys_folder: ""
   
     op_routers:
       main:
@@ -14,46 +51,37 @@
         interfaces:
           - net: grey_net
             subnet: grey_subnet
-      
-    instances:
-      grey_control:
-        image: UbuntuJammy2204-Desktop
-        image_size: 40
-        flavor: small
-        networks: 
-          grey:
-            fixed_ipv4: 10.0.0.100
-        sshjumpable: true
-        key_name: remote
-        authorized_keys_folder: ""
-  vars_files:
-    - ./vars/deploy_vars.yml
 
   tasks:
-    - name: "Deploy Network"
+    - name: Deploy Network
       include_role:
         name: deploy_network_instance
       loop: "{{ networks | dict2items }}"
       loop_control:
         loop_var: network
 
-    - name: "Connect Internet"
+    - name: Connect Internet
       include_role:
         name: deploy_openstack_router
       loop: "{{ op_routers | dict2items }}"
       loop_control:
         loop_var: router
 
-    - name: Deploy control instance
-      include_role:
-        name: deploy_device_instance
-      loop: "{{ instances | dict2items }}"
-      loop_control:
-        loop_var: instance
 
 - name: Configure control instance
   hosts: deploy
   become: yes
+  vars:
+    default_key_name: "{{ hostvars['localhost']['default_key_name'] }}"
+    ansible_control_key_name: "{{ hostvars['localhost']['ansible_control_key_name'] }}"
+    sshjump_net: "{{ hostvars['localhost']['sshjump_net'] }}"
+    networks: "{{ hostvars['localhost']['networks'] }}"
+    op_routers: "{{ hostvars['localhost']['op_routers'] }}"
+    instances: "{{ hostvars['localhost']['instances'] }}"
+
+  vars_files:
+    - ./vars/secrets.yml
+
   tasks:
     - name: Install Ansible
       apt:
@@ -67,21 +95,49 @@
       cmd:
         command: "pip3 install python-openstackclient"
     
-    - name: Copy over playbook
+    - name: Copy over authorized ssh keys
       copy:
-        src: ~/Documents/github/CDT/net_deploy/
-        dst: /home/ubuntu/net_deploy/
+        src: ./ssh_authorized_keys
+        dst: /home/ubuntu/.ssh/authorized_keys
         directory_mode: 0755
         remote_src: no
 
-    - name: Copy over ssh keys
+    - name: Copy private key
       copy:
-        src: ~/Documents/github/CDT/net_deploy/
-        dst: /home/ubuntu/net_deploy/
-        directory_mode: 0755
+        src: ./ssh_deploy_keys/id_rsa
+        dst: /home/ubuntu/.ssh/id_rsa
         remote_src: no
+
+    - name: Copy public key
+      copy:
+        src: ./ssh_deploy_keys/id_rsa.pub
+        dst: /home/ubuntu/.ssh/id_rsa.pub
+  
+    - name: Copy over network playbook
+      copy:
+        src: ~/Documents/github/CDT/network_ansible/
+        dst: /home/ubuntu/network_ansible/
+
+    - name: Template deploy vars
+      template:
+        src: ~/Documents/github/CDT/network_ansible/templates/deploy_vars.j2
+        dst: /home/ubuntu/network_ansible/vars/deploy_vars.yml
     
+
+- name: Run build_network on control instance
+  hosts: deploy
+  vars:
+    vars:
+    default_key_name: "{{ hostvars['deploy']['default_key_name'] }}"
+    ansible_control_key_name: "{{ hostvars['deploy']['ansible_control_key_name'] }}"
+    sshjump_net: "{{ hostvars['deploy']['sshjump_net'] }}"
+    networks: "{{ hostvars['deploy']['networks'] }}"
+    op_routers: "{{ hostvars['deploy']['op_routers'] }}"
+    instances: "{{ hostvars['deploy']['instances'] }}"
+  vars_files:
+    - ./vars/secrets.yml
+
+  tasks:
     - name: Run playbook on control instance
       shell:
-        cmd: ""
-
+        cmd: "cd /home/ubuntu/network_ansible && echo \"{{ kjc8084_op_password }}\" | source kjc8084_bravo_infra-openrc.sh && ansible-playbook build_network.yml"

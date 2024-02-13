@@ -23,6 +23,11 @@
     --key-name {{ instance.value.key_name }} 
     {{ instance.key }}
   ignore_errors: yes
+  register: instance_info
+
+- name: Set instance id var
+  set_fact:
+    instances: "{{ instances | combine({ instance.key: {'id': instance_info.id}}) }}"
 
 - name: Pause for instance setup
   pause: 

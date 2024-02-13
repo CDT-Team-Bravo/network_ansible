@@ -61,14 +61,14 @@ async def delete_volume(name, id):
     print(name, f'Volume({res}, {err}, {err_count})')
     
 
-async def delete_pf_instances():
+async def delete_pf_instances(suffix: str = '_pfsense'):
     ids, _ = await run('openstack server list -f value -c ID')
     ids = ids.split('\n')
     names, _ = await run('openstack server list -f value -c Name')
     names = names.split('\n')
     delete_instance_tasks = []
     for instance_id, name in zip(ids, names):
-        if name.strip().lower().endswith('_pfsense'):
+        if name.strip().lower().endswith(suffix):
             task = asyncio.ensure_future(delete_instance(name, instance_id))
             delete_instance_tasks.append(task)
     volume_ids = await asyncio.gather(*delete_instance_tasks)
@@ -80,9 +80,14 @@ async def delete_pf_instances():
     
 
 async def main():
-    await delete_pf_instances()
+    await delete_pf_instances(suffix='_pfsense')
+    # await delete_pf_instances(suffix='2_pfsense')
+    # await delete_pf_instances(suffix='console_pfsense')
 
-    net_names = ['red_net', 'local_1_net', 'remote_1_net', 'sat_1_net', 'local_2_net', 'remote_2_net', 'sat_2_net']
+    red_net = ['red_net']
+    t1_nets = ['local_1_net', 'remote_1_net', 'sat_1_net']
+    t2_nets = ['local_2_net', 'remote_2_net', 'sat_2_net']
+    net_names = t2_nets + t1_nets + red_net
     await delete_networks_by_names(net_names)
 
 
