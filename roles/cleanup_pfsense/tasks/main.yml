@@ -9,6 +9,7 @@
     ipv4_prefixlen: "{{ interface.value.cidr }}"
     enable: false
     state: absent
+  ignore_errors: true
   loop: "{{ router.value.interfaces | dict2items }}"
   loop_control:
     loop_var: interface

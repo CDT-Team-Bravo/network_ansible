@@ -5,36 +5,38 @@
 #########################################################################################################################################
 
 pfsenses:
-  main_1: {
+  Saturn: {
     interfaces: {
-      control:              { ip: 10.0.0.230/24,   remote_networks: internet },
-      wan:                  { ip: 88.31.10.1/24,   remote_networks: blue_2_lans },
-      remote:               { ip: 10.0.1.254/24,   remote_networks: main_1_remotes },
-      lan:                  { ip: 192.168.1.1/24 }
+      control:              { ip: 10.0.0.230/24 },
+      wan:                  { ip: 88.31.10.1/24 },
+      remote:               { ip: 10.0.1.254/24 },
+      lan:                  { ip: 192.168.1.1/24 },
+      internet:             { ip: 44.44.44.254/24 }
     }
   }
 
-  outer_1: {
+  Apollo: {
     interfaces: {
-      control:              { ip: 10.0.0.231/24,   remote_networks: internet },
-      wan:                  { ip: 10.0.1.253/24,   remote_networks: outer_1_remotes },
+      control:              { ip: 10.0.0.231/24 },
+      wan:                  { ip: 10.0.1.253/24 },
       lan:                  { ip: 172.128.1.1/24 }
     }
   }
 
-  main_2: {
+  Uranus: {
     interfaces: {
-      control:              { ip: 10.0.0.232/24,   remote_networks: internet },
-      wan:                  { ip: 88.31.10.254/24, remote_networks: blue_1_lans },
-      remote:               { ip: 10.0.2.254/24,   remote_networks: main_2_remotes },
-      lan:                  { ip: 192.168.2.1/24 }
+      control:              { ip: 10.0.0.232/24 },
+      wan:                  { ip: 88.31.10.254/24 },
+      remote:               { ip: 10.0.2.254/24 },
+      lan:                  { ip: 192.168.2.1/24 },
+      internet:             { ip: 44.44.44.253/24 }
     }
   }
 
-  outer_2: {
+  Artemis: {
     interfaces: {
-      control:              { ip: 10.0.0.233/24,   remote_networks: internet },
-      wan:                  { ip: 10.0.2.253/24,   remote_networks: outer_2_remotes },
+      control:              { ip: 10.0.0.233/24 },
+      wan:                  { ip: 10.0.2.253/24 },
       lan:                  { ip: 172.128.2.1/24 }
     }
   }
@@ -53,10 +55,6 @@ rules:
   #   config_from_lan:        { src: t2_remote,       dst: 10.0.2.254,        protocol: tcp,      dst_port: admin_ports }
   #   config_from_lan:        { src: t2_remote,       dst: 10.0.2.253,        protocol: tcp,      dst_port: admin_ports }
 
-  BLOCK_INTERFERENCE:
-    block_to_b1:            { src: blue_2_router,     dst: blue_1_lans,       protocol: any,      action: block }
-    block_to_b2:            { src: blue_1_router,     dst: blue_2_lans,       protocol: any,      action: block }
-
   ALLOW_ALL:
     allow_all:              { src: any,             dst: any,               protocol: any,      action: pass }
 
@@ -68,8 +66,8 @@ rules:
   #   anti_s2con_lockout:     { src: grey_s2_con,          dst: any,                 protocol: any }
   #   anti_rcon_lockout:      { src: grey_r_con,           dst: any,                 protocol: any }
 
-  # ICMP:
-  #   allow_icmp:             { src: any,             dst: any,                 protocol: icmp,     icmptype: any, log: no }
+  ICMP:
+    allow_icmp:             { src: any,             dst: any,                 protocol: icmp,     icmptype: any, log: no }
 
   # BLUE_INTERFERENCE:
   #   block_blue_a:           { src: blue_1_lans,     dst: blue_2_lans,         protocol: any,      action: block}

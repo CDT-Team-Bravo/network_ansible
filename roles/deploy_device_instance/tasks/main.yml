@@ -13,6 +13,11 @@
   set_fact: 
     nic_params: "{{ nic_params }} --nic net-id={{ sshjump_net.id }}"
 
+- name: Add RustDesk interface
+  when: instance.value.rustdeskable is true and instance.value.key_name is defined
+  set_fact: 
+    nic_params: "{{ nic_params }} --nic net-id={{ rustdesk_net.id }}"
+
 - name: Deploy instances
   command: >
     openstack server create

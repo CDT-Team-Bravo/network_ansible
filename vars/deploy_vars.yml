@@ -1,6 +1,6 @@
 ---
 default_key_name: remote
-ansible_control_key_name: netDeploy
+ansible_control_key_name: grey_control
 
 deploy_box:
   name: deploy

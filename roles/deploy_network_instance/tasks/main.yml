@@ -18,7 +18,7 @@
     name: "{{ network.key }}_subnet"
     cidr: "{{ network.value.subnet.address }}"
     gateway_ip: "{{ network.value.subnet.gateway_ip }}"
-  register: subnet_create_result
+  register: subnet_create_result_wroutes
 
 - name: "Create Subnet - {{ network.key }}_subnet"
   when: network.value.host_routes is defined
@@ -29,11 +29,17 @@
     cidr: "{{ network.value.subnet.address }}"
     gateway_ip: "{{ network.value.subnet.gateway_ip }}"
     host_routes: "{{ network.value.host_routes }}"
-  register: subnet_create_result
+  register: subnet_create_result_woroutes
 
 - name: Register Subnet ID
+  when: network.value.host_routes is not defined
   set_fact: 
-    networks: "{{ networks | combine({ network.key: { 'subnet': { 'id': subnet_create_result.id }}}, recursive=true) }}"
+    networks: "{{ networks | combine({ network.key: { 'subnet': { 'id': subnet_create_result_wroutes.id }}}, recursive=true) }}"
+
+- name: Register Subnet ID
+  when: network.value.host_routes is defined
+  set_fact: 
+    networks: "{{ networks | combine({ network.key: { 'subnet': { 'id': subnet_create_result_woroutes.id }}}, recursive=true) }}"
 
 - name: Deploy instances on network
   when: network.value.instances is defined

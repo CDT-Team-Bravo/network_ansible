@@ -20,7 +20,7 @@
     --boot-from-volume {{ router.value.image_size }}
     {{ nic_params }}
     --key-name {{ ansible_control_key_name }}
-    {{ router.key }}_pfsense
+    {{ router.key }}
     --wait
   ignore_errors: yes
 
