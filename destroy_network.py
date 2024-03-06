@@ -52,6 +52,8 @@ async def delete_instance(name, id):
 
 
 async def delete_volume(name, id):
+    if id is None:
+        return
     res, err = await run(f'openstack volume delete {id}')
     err_count = 0
     while err is not None and 'volume status must be available' in err.lower():
@@ -152,7 +154,7 @@ async def main():
 
     # pfsense_names = ['Apollo', 'Artemis', 'Saturn', 'Uranus', 'testbox']
     # testbox_names = ['testbox']
-    satellite_tests = ['blue1_NOS3', 'blue2_NOS3', 'blue1_COSMOS', 'blue2_COSMOS']
+    satellite_tests = ['blue1_NOS3', 'blue2_NOS3']
     await delete_instances_by_names(satellite_tests)
 
     await delete_unassigned_volumes()

@@ -83,6 +83,7 @@
         subnet:
           address: 66.66.66.0/24
           gateway_ip: "66.66.66.66"
+          host_routes:
           - destination: 129.21.33.138/32
             nexthop: 66.66.66.66
         port_security_enabled: true
